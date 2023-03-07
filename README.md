@@ -2,7 +2,7 @@
 
 GoGPT CLI is a program written in Go that allows you to chat with the GPT chatbot in your terminal.
 
-![GoGPT](https://imgur.com/a/UET8g1f)
+![GoGPT](screenshot.png)
 
 ## Installation
 
