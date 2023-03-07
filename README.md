@@ -14,7 +14,7 @@ To install GoGPT, follow these steps:
 
 ## Usage
 
-To chat with ChatGPT, run the executable file and follow the prompts. You can optionally pass in the `-k` flag to specify API Key to use. Here's an example:
+To chat with ChatGPT, run the executable file and follow the prompts. You must pass in the `-k` flag to specify API Key to use. Here's an example:
 ```
 ./GoGPT -k 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
 ```
