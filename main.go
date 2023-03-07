@@ -94,6 +94,7 @@ func main() {
 	fmt.Print("> ")
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
+		fmt.Print("> ")
 		if scanner.Text() == "" {
 			continue
 		}
@@ -136,7 +137,6 @@ func main() {
 		}
 		resp.Body.Close()
 
-		fmt.Print("> ")
 		for _, v := range chatResp.Choices {
 			for _, r := range v.Message.Content {
 				d := color.New(color.FgCyan, color.Bold)
