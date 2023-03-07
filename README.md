@@ -1,12 +1,12 @@
-# GoGPT CLI
+# GoGPT
 
-GoGPT CLI is a program written in Go that allows you to chat with the GPT chatbot in your terminal.
+GoGPT is a program written in Go that allows you to chat with the GPT chatbot in your terminal.
 
 ![GoGPT](screenshot.png)
 
 ## Installation
 
-To install GoGPT CLI, follow these steps:
+To install GoGPT, follow these steps:
 1. Install Go on your system.
 2. Clone this repository.
 3. Run `go build` to build the program.
@@ -21,11 +21,11 @@ To chat with ChatGPT, run the executable file and follow the prompts. You can op
 
 ## Configuration
 
-GoGPT CLI currently doesn't have any configuration options.
+GoGPT currently doesn't have any configuration options.
 
 ## Contributing
 
-If you'd like to contribute to GoGPT CLI, please submit a pull request with your changes. Before submitting, make sure your code passes the tests and is properly formatted.
+If you'd like to contribute to GoGPT, please submit a pull request with your changes. Before submitting, make sure your code passes the tests and is properly formatted.
 
 ## License
 
