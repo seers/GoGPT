@@ -91,6 +91,8 @@ func main() {
 		},
 	}
 
+	fmt.Println("Start ask your question!")
+	fmt.Print("> ")
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		if scanner.Text() == "" {
@@ -133,7 +135,9 @@ func main() {
 		if err != nil {
 			os.Exit(2)
 		}
+		resp.Body.Close()
 
+		fmt.Print("> ")
 		for _, v := range chatResp.Choices {
 			for _, r := range v.Message.Content {
 				d := color.New(color.FgCyan, color.Bold)
@@ -145,6 +149,7 @@ func main() {
 		fmt.Println()
 		fmt.Println()
 
+		fmt.Print("> ")
 		if chatResp.Usage.TotalTokens == 4096 {
 			red := color.New(color.FgRed)
 			boldRed := red.Add(color.Bold)
@@ -161,6 +166,5 @@ func main() {
 
 		messages = append(messages, chatResp.Choices[0].Message)
 
-		resp.Body.Close()
 	}
 }
