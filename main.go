@@ -91,7 +91,6 @@ func main() {
 		},
 	}
 
-	fmt.Println("Start ask your question!")
 	fmt.Print("> ")
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
