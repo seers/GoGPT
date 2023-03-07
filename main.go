@@ -142,7 +142,7 @@ func main() {
 			for _, r := range v.Message.Content {
 				d := color.New(color.FgCyan, color.Bold)
 				d.Print(string(r))
-				time.Sleep(20 * time.Millisecond)
+				time.Sleep(10 * time.Millisecond)
 			}
 		}
 
