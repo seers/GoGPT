@@ -73,7 +73,9 @@ func main() {
 
 	flag.Parse()
 
-	APIKey = os.Getenv("API_KEY")
+	if APIKey == "" {
+		APIKey = os.Getenv("API_KEY")
+	}
 
 	if APIKey == "" {
 		fmt.Println("Error: APIKey is required")
