@@ -94,16 +94,12 @@ func main() {
 	}
 
 	if proxy != "" {
-		u, err := url.Parse(proxy)
-		if err != nil {
-			boldRed.Println("Error: Proxy format")
-			os.Exit(2)
-		}
 		validIP := regexp.MustCompile(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}$`)
 		if !validIP.MatchString(proxy) {
 			boldRed.Println("Error: Proxy format")
 			os.Exit(2)
 		}
+		u, _ := url.Parse(proxy)
 		client.Transport = &http.Transport{
 			Proxy: http.ProxyURL(u),
 		}
