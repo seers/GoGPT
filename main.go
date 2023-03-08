@@ -17,6 +17,7 @@ import (
 type ChatReq struct {
 	Model    string    `json:"model"`
 	Messages []Message `json:"messages"`
+	Stream   bool      `json:"stream"`
 }
 
 type Message struct {
@@ -103,7 +104,8 @@ func main() {
 	}
 
 	chatReq := &ChatReq{
-		Model: Model,
+		Model:  Model,
+		Stream: true,
 	}
 
 	messages := []Message{
@@ -156,7 +158,6 @@ func main() {
 			if err != nil {
 				os.Exit(2)
 			}
-			resp.Body.Close()
 
 			for _, v := range chatResp.Choices {
 				for _, r := range v.Message.Content {
@@ -164,6 +165,8 @@ func main() {
 					time.Sleep(10 * time.Millisecond)
 				}
 			}
+
+			resp.Body.Close()
 
 			fmt.Println()
 			fmt.Println()
@@ -183,7 +186,7 @@ func main() {
 			}
 			resp.Body.Close()
 
-			boldRed.Print("Server stop the conversation, ", errResp.Error.Message)
+			boldRed.Println("Server stop the conversation,", errResp.Error.Message)
 			os.Exit(2)
 		}
 	}
