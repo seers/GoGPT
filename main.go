@@ -85,7 +85,6 @@ func main() {
 		u, err := url.Parse(proxy)
 		if err != nil {
 			fmt.Println("Error: Proxy format error")
-			flag.Usage()
 			os.Exit(2)
 		}
 		client.Transport = &http.Transport{
