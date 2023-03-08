@@ -67,6 +67,10 @@ func init() {
 }
 
 func main() {
+	d := color.New(color.FgCyan, color.Bold)
+	red := color.New(color.FgRed)
+	boldRed := red.Add(color.Bold)
+
 	flag.Parse()
 
 	if APIKey == "" {
@@ -147,7 +151,6 @@ func main() {
 
 			for _, v := range chatResp.Choices {
 				for _, r := range v.Message.Content {
-					d := color.New(color.FgCyan, color.Bold)
 					d.Print(string(r))
 					time.Sleep(10 * time.Millisecond)
 				}
@@ -158,8 +161,6 @@ func main() {
 
 			fmt.Print("> ")
 			if chatResp.Usage.TotalTokens == 4096 {
-				red := color.New(color.FgRed)
-				boldRed := red.Add(color.Bold)
 				boldRed.Print("We reach the end of conversation")
 				os.Exit(2)
 			}
@@ -173,9 +174,8 @@ func main() {
 			}
 			resp.Body.Close()
 
-			red := color.New(color.FgRed)
-			boldRed := red.Add(color.Bold)
-			boldRed.Print("Server stop the conversation because ", errResp.Error.Message)
+			boldRed.Print("Server stop the conversation")
+			boldRed.Print(errResp.Error.Message)
 			os.Exit(2)
 		}
 	}
