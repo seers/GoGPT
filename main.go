@@ -58,7 +58,7 @@ var Model string
 
 const (
 	APIURL        = "https://api.openai.com/v1/chat/completions"
-	ServerTimeout = 5
+	ServerTimeout = 15
 )
 
 func init() {
