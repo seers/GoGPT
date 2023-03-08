@@ -130,8 +130,6 @@ func main() {
 			os.Exit(2)
 		}
 
-		// log.Println("send:", bf.String())
-
 		req, err := http.NewRequest("POST", APIURL, bf)
 		if err != nil {
 			os.Exit(2)
