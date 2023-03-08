@@ -79,7 +79,11 @@ func main() {
 		os.Exit(2)
 	}
 
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: &http.Transport{
+			Proxy: http.ProxyFromEnvironment,
+		},
+	}
 
 	if proxy != "" {
 		u, err := url.Parse(proxy)
@@ -173,8 +177,7 @@ func main() {
 			}
 			resp.Body.Close()
 
-			boldRed.Print("Server stop the conversation")
-			boldRed.Print(errResp.Error.Message)
+			boldRed.Print("Server stop the conversation, ", errResp.Error.Message)
 			os.Exit(2)
 		}
 	}
