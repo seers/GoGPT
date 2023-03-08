@@ -57,7 +57,8 @@ var APIKey string
 var Model string
 
 const (
-	APIURL = "https://api.openai.com/v1/chat/completions"
+	APIURL        = "https://api.openai.com/v1/chat/completions"
+	ServerTimeout = 5
 )
 
 func init() {
@@ -87,7 +88,7 @@ func main() {
 		Transport: &http.Transport{
 			Proxy: http.ProxyFromEnvironment,
 		},
-		Timeout: 10 * time.Second,
+		Timeout: ServerTimeout * time.Second,
 	}
 
 	if proxy != "" {
@@ -145,7 +146,7 @@ func main() {
 
 		resp, err := client.Do(req)
 		if err != nil {
-			boldRed.Println("Error: Connection lost")
+			boldRed.Println("Error: Server Timeout")
 			os.Exit(2)
 		}
 
