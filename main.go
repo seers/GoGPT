@@ -115,10 +115,12 @@ func main() {
 	fmt.Print("> ")
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
-		fmt.Print("> ")
 		if scanner.Text() == "" {
+			fmt.Print("> ")
 			continue
 		}
+
+		d.Print("> ")
 
 		messages = append(messages, Message{
 			Role:    "user",
