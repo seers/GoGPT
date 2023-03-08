@@ -159,12 +159,12 @@ func main() {
 				os.Exit(2)
 			}
 
-			for _, v := range chatResp.Choices {
-				for _, r := range v.Message.Content {
-					d.Print(string(r))
-					time.Sleep(10 * time.Millisecond)
-				}
+			// for _, v := range chatResp.Choices {
+			for _, r := range chatResp.Choices[0].Message.Content {
+				d.Print(string(r))
+				// time.Sleep(10 * time.Millisecond)
 			}
+			// }
 
 			resp.Body.Close()
 
