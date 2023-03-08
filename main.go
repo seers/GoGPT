@@ -43,6 +43,15 @@ type ChatResp struct {
 	} `json:"usage"`
 }
 
+type ErrResp struct {
+	Error struct {
+		Message string      `json:"message"`
+		Type    string      `json:"type"`
+		Param   interface{} `json:"param"`
+		Code    interface{} `json:"code"`
+	} `json:"error"`
+}
+
 var proxy string
 var APIKey string
 var Model string
@@ -71,7 +80,7 @@ func main() {
 	if proxy != "" {
 		u, err := url.Parse(proxy)
 		if err != nil {
-			fmt.Println("Error: Proxy format")
+			fmt.Println("Error: Proxy format error")
 			flag.Usage()
 			os.Exit(2)
 		}
@@ -124,46 +133,50 @@ func main() {
 
 		resp, err := client.Do(req)
 		if err != nil {
-			fmt.Println("Error: can't connect to server, try proxy")
-			flag.Usage()
+			fmt.Println("Error: connection lost")
 			os.Exit(2)
 		}
 
-		chatResp := &ChatResp{}
-		// log.Printf("%+v\n", chatResp)
-		err = json.NewDecoder(resp.Body).Decode(chatResp)
-		if err != nil {
-			os.Exit(2)
-		}
-		resp.Body.Close()
-
-		for _, v := range chatResp.Choices {
-			for _, r := range v.Message.Content {
-				d := color.New(color.FgCyan, color.Bold)
-				d.Print(string(r))
-				time.Sleep(10 * time.Millisecond)
+		if resp.StatusCode == 200 {
+			chatResp := &ChatResp{}
+			err = json.NewDecoder(resp.Body).Decode(chatResp)
+			if err != nil {
+				os.Exit(2)
 			}
-		}
+			resp.Body.Close()
 
-		fmt.Println()
-		fmt.Println()
+			for _, v := range chatResp.Choices {
+				for _, r := range v.Message.Content {
+					d := color.New(color.FgCyan, color.Bold)
+					d.Print(string(r))
+					time.Sleep(10 * time.Millisecond)
+				}
+			}
 
-		fmt.Print("> ")
-		if chatResp.Usage.TotalTokens == 4096 {
+			fmt.Println()
+			fmt.Println()
+
+			fmt.Print("> ")
+			if chatResp.Usage.TotalTokens == 4096 {
+				red := color.New(color.FgRed)
+				boldRed := red.Add(color.Bold)
+				boldRed.Print("We reach the end of conversation")
+				os.Exit(2)
+			}
+
+			messages = append(messages, chatResp.Choices[0].Message)
+		} else {
+			errResp := &ErrResp{}
+			err := json.NewDecoder(resp.Body).Decode(errResp)
+			if err != nil {
+				os.Exit(2)
+			}
+			resp.Body.Close()
+
 			red := color.New(color.FgRed)
 			boldRed := red.Add(color.Bold)
-			boldRed.Print("We reach the end of conversation")
-			os.Exit(0)
+			boldRed.Print("Server stop the conversation because ", errResp.Error.Message)
+			os.Exit(2)
 		}
-
-		if len(chatResp.Choices) == 0 {
-			red := color.New(color.FgRed)
-			boldRed := red.Add(color.Bold)
-			boldRed.Print("Server stop the conversation")
-			os.Exit(0)
-		}
-
-		messages = append(messages, chatResp.Choices[0].Message)
-
 	}
 }
