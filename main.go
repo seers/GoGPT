@@ -95,8 +95,12 @@ func main() {
 
 	if proxy != "" {
 		u, err := url.Parse(proxy)
-		validIP := regexp.MustCompile(`/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}$/gm`)
-		if err != nil || validIP.MatchString(proxy) {
+		if err != nil {
+			boldRed.Println("Error: Proxy format")
+			os.Exit(2)
+		}
+		validIP := regexp.MustCompile(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}$`)
+		if !validIP.MatchString(proxy) {
 			boldRed.Println("Error: Proxy format")
 			os.Exit(2)
 		}
