@@ -30,6 +30,11 @@ To chat with ChatGPT, run the executable file and follow the prompts. You must p
         Proxy address, eg http://127.0.0.1:7890 or sock5://127.0.0.1:7890
 ```
 
+## ENV
+
+You can pass the API Key with `API_KEY`, and Proxy with `HTTPS_PROXY` or `HTTP_PROXY`.
+
+
 ## Contributing
 
 If you'd like to contribute to GoGPT, please submit a pull request with your changes. Before submitting, make sure your code passes the tests and is properly formatted.
