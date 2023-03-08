@@ -87,13 +87,13 @@ func main() {
 		Transport: &http.Transport{
 			Proxy: http.ProxyFromEnvironment,
 		},
-		Timeout: 15 * time.Second,
+		Timeout: 10 * time.Second,
 	}
 
 	if proxy != "" {
 		u, err := url.Parse(proxy)
 		if err != nil {
-			fmt.Println("Error: Proxy format error")
+			fmt.Println("Error: Proxy format")
 			os.Exit(2)
 		}
 		client.Transport = &http.Transport{
@@ -145,7 +145,7 @@ func main() {
 
 		resp, err := client.Do(req)
 		if err != nil {
-			boldRed.Println("Error: connection lost")
+			boldRed.Println("Error: Connection lost")
 			os.Exit(2)
 		}
 
