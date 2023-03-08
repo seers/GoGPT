@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/fatih/color"
@@ -94,8 +95,9 @@ func main() {
 
 	if proxy != "" {
 		u, err := url.Parse(proxy)
-		if err != nil {
-			fmt.Println("Error: Proxy format")
+		validIP := regexp.MustCompile(`/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}$/gm`)
+		if err != nil || validIP.MatchString(proxy) {
+			boldRed.Println("Error: Proxy format")
 			os.Exit(2)
 		}
 		client.Transport = &http.Transport{
