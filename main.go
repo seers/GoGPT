@@ -31,12 +31,18 @@ type ChatResp struct {
 	Object  string `json:"object"`
 	Created int    `json:"created"`
 	Model   string `json:"model"`
+	Usage   struct {
+		PromptTokens     int `json:"prompt_tokens"`
+		CompletionTokens int `json:"completion_tokens"`
+		TotalTokens      int `json:"total_tokens"`
+	} `json:"usage"`
 	Choices []struct {
-		Delta struct {
+		Message struct {
+			Role    string `json:"role"`
 			Content string `json:"content"`
-		} `json:"delta"`
-		Index        int         `json:"index"`
-		FinishReason interface{} `json:"finish_reason"`
+		} `json:"message"`
+		FinishReason string `json:"finish_reason"`
+		Index        int    `json:"index"`
 	} `json:"choices"`
 }
 
@@ -102,8 +108,7 @@ func main() {
 	}
 
 	chatReq := &ChatReq{
-		Model:  Model,
-		Stream: true,
+		Model: Model,
 	}
 
 	messages := []Message{
@@ -151,22 +156,19 @@ func main() {
 		}
 
 		if resp.StatusCode == http.StatusOK {
-			dec := json.NewDecoder(resp.Body)
+			chatResp := &ChatResp{}
+			err := json.NewDecoder(resp.Body).Decode(chatResp)
+			if err != nil {
+				os.Exit(2)
+			}
 
-			for dec.More() {
-				chatResp := &ChatResp{}
+			d.Print(chatResp.Choices[0].Message.Content)
 
-				err := dec.Decode(chatResp)
-				if err != nil {
-					os.Exit(2)
-				}
+			messages = append(messages, chatResp.Choices[0].Message)
 
-				d.Print(chatResp.Choices[0].Delta.Content)
-
-				messages = append(messages, Message{
-					Role:    "assistant",
-					Content: chatResp.Choices[0].Delta.Content,
-				})
+			if chatResp.Usage.TotalTokens >= MaxToken {
+				boldRed.Println("We reach the end")
+				os.Exit(2)
 			}
 
 			resp.Body.Close()
@@ -186,7 +188,7 @@ func main() {
 			if errResp.Error.Message != "" {
 				boldRed.Println(errResp.Error.Message)
 			} else {
-				boldRed.Println("Server stop the conversation")
+				boldRed.Println("Server stop to continue")
 			}
 			os.Exit(2)
 		}
