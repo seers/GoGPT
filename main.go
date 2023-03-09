@@ -61,6 +61,7 @@ var Model string
 const (
 	APIURL        = "https://api.openai.com/v1/chat/completions"
 	ServerTimeout = 15
+	MaxToken      = 4096
 )
 
 func init() {
@@ -94,7 +95,7 @@ func main() {
 	}
 
 	if proxy != "" {
-		validIP := regexp.MustCompile(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}$`)
+		validIP := regexp.MustCompile(`^(https?|socks5)://[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:[0-9]{1,5}$`)
 		if !validIP.MatchString(proxy) {
 			boldRed.Println("Error: Proxy format")
 			os.Exit(2)
@@ -154,19 +155,26 @@ func main() {
 			os.Exit(2)
 		}
 
-		if resp.StatusCode == 200 {
-			chatResp := &ChatResp{}
-			err = json.NewDecoder(resp.Body).Decode(chatResp)
-			if err != nil {
-				os.Exit(2)
-			}
+		if resp.StatusCode == http.StatusOK {
+			dec := json.NewDecoder(resp.Body)
 
-			// for _, v := range chatResp.Choices {
-			for _, r := range chatResp.Choices[0].Message.Content {
-				d.Print(string(r))
-				// time.Sleep(10 * time.Millisecond)
+			for dec.More() {
+				chatResp := &ChatResp{}
+
+				err := dec.Decode(chatResp)
+				if err != nil {
+					os.Exit(2)
+				}
+
+				d.Print(chatResp.Choices[0].Message.Content)
+
+				if chatResp.Usage.TotalTokens >= MaxToken {
+					boldRed.Print("We reach the end of conversation")
+					os.Exit(2)
+				}
+
+				messages = append(messages, chatResp.Choices[0].Message)
 			}
-			// }
 
 			resp.Body.Close()
 
@@ -174,12 +182,6 @@ func main() {
 			fmt.Println()
 
 			fmt.Print("> ")
-			if chatResp.Usage.TotalTokens == 4096 {
-				boldRed.Print("We reach the end of conversation")
-				os.Exit(2)
-			}
-
-			messages = append(messages, chatResp.Choices[0].Message)
 		} else {
 			errResp := &ErrResp{}
 			err := json.NewDecoder(resp.Body).Decode(errResp)
