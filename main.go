@@ -57,7 +57,7 @@ type ErrResp struct {
 
 const (
 	APIURL        = "https://api.openai.com/v1/chat/completions"
-	ServerTimeout = 3
+	ServerTimeout = 15
 	MaxToken      = 4096
 )
 
@@ -151,7 +151,7 @@ func main() {
 
 		resp, err := client.Do(req)
 		if err != nil {
-			boldRed.Println("Error: Server Timeout")
+			boldRed.Println("Error: Server timeout")
 			os.Exit(2)
 		}
 
@@ -162,7 +162,10 @@ func main() {
 				os.Exit(2)
 			}
 
-			d.Print(chatResp.Choices[0].Message.Content)
+			for _, r := range chatResp.Choices[0].Message.Content {
+				d.Print(string(r))
+				time.Sleep(10 * time.Millisecond)
+			}
 
 			messages = append(messages, chatResp.Choices[0].Message)
 
