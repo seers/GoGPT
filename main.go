@@ -54,15 +54,15 @@ type ErrResp struct {
 	} `json:"error"`
 }
 
+const (
+	APIURL        = "https://api.openai.com/v1/chat/completions"
+	ServerTimeout = 3
+	MaxToken      = 4096
+)
+
 var proxy string
 var APIKey string
 var Model string
-
-const (
-	APIURL        = "https://api.openai.com/v1/chat/completions"
-	ServerTimeout = 15
-	MaxToken      = 4096
-)
 
 func init() {
 	flag.StringVar(&proxy, "p", "", "Proxy address, eg http://127.0.0.1:7890 or sock5://127.0.0.1:7890")
@@ -79,12 +79,12 @@ func main() {
 
 	if APIKey == "" {
 		APIKey = os.Getenv("API_KEY")
-	}
 
-	if APIKey == "" {
-		fmt.Println("Error: APIKey is required")
-		flag.Usage()
-		os.Exit(2)
+		if APIKey == "" {
+			fmt.Println("Error: APIKey is required")
+			flag.Usage()
+			os.Exit(2)
+		}
 	}
 
 	client := &http.Client{
@@ -190,7 +190,11 @@ func main() {
 			}
 			resp.Body.Close()
 
-			boldRed.Println("Server stop the conversation,", errResp.Error.Message)
+			if errResp.Error.Message != "" {
+				boldRed.Println(errResp.Error.Message)
+			} else {
+				boldRed.Println("Server stop the conversation")
+			}
 			os.Exit(2)
 		}
 	}
