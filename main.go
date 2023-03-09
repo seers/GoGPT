@@ -30,19 +30,14 @@ type ChatResp struct {
 	ID      string `json:"id"`
 	Object  string `json:"object"`
 	Created int    `json:"created"`
+	Model   string `json:"model"`
 	Choices []struct {
-		Index   int `json:"index"`
-		Message struct {
-			Role    string `json:"role"`
+		Delta struct {
 			Content string `json:"content"`
-		} `json:"message"`
-		FinishReason string `json:"finish_reason"`
+		} `json:"delta"`
+		Index        int         `json:"index"`
+		FinishReason interface{} `json:"finish_reason"`
 	} `json:"choices"`
-	Usage struct {
-		PromptTokens     int `json:"prompt_tokens"`
-		CompletionTokens int `json:"completion_tokens"`
-		TotalTokens      int `json:"total_tokens"`
-	} `json:"usage"`
 }
 
 type ErrResp struct {
@@ -166,14 +161,12 @@ func main() {
 					os.Exit(2)
 				}
 
-				d.Print(chatResp.Choices[0].Message.Content)
+				d.Print(chatResp.Choices[0].Delta.Content)
 
-				if chatResp.Usage.TotalTokens >= MaxToken {
-					boldRed.Println("We reach the end of conversation")
-					os.Exit(2)
-				}
-
-				messages = append(messages, chatResp.Choices[0].Message)
+				messages = append(messages, Message{
+					Role:    "assistant",
+					Content: chatResp.Choices[0].Delta.Content,
+				})
 			}
 
 			resp.Body.Close()
