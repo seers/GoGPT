@@ -169,7 +169,7 @@ func main() {
 				d.Print(chatResp.Choices[0].Message.Content)
 
 				if chatResp.Usage.TotalTokens >= MaxToken {
-					boldRed.Print("We reach the end of conversation")
+					boldRed.Println("We reach the end of conversation")
 					os.Exit(2)
 				}
 
